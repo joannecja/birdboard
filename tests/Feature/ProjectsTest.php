@@ -27,20 +27,30 @@ class ProjectsTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-
         $attributes = factory('App\Project')->raw();
 
         $this->post('/projects', $attributes)->assertRedirect('/projects');
         $this->assertDatabaseHas('projects', $attributes);
-
-
         $this->get('/projects')->assertSee($attributes['title']);
+    }
+
+    /** @test */
+    public function testUserViewProject()
+    {
+        $this->withoutExceptionHandling();
+
+        $project = factory('App\Project')->create();
+
+        $this->get($project->path())
+            ->assertSee($project->title)
+            ->assertSee($project->description);
     }
 
     /** @test */
     public function projectsRequireTitles()
     {
         $attributes = factory('App\Project')->raw(['title' => '']);
+
         $this->post('/projects', $attributes)->assertSessionHasErrors('title');
     }
 
@@ -48,6 +58,7 @@ class ProjectsTest extends TestCase
     public function projectsRequireDescriptions()
     {
         $attributes = factory('App\Project')->raw(['description' => '']);
+
         $this->post('/projects', $attributes)->assertSessionHasErrors('description');
     }
 }
