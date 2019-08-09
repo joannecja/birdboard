@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ProjectsTest extends TestCase
+class ManageProjectsTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
@@ -23,33 +23,23 @@ class ProjectsTest extends TestCase
     }
 
     /** @test */
-    public function guestsCannotCreateProjects()
-    {
-        $attributes = factory('App\Project')->raw();
-
-        $this->post('/projects', $attributes)->assertRedirect('login');
-    }
-
-    /** @test */
-    public function guestsCannotViewProjects()
-    {
-
-        $this->get('/projects')->assertRedirect('login');
-    }
-
-    /** @test */
-    public function guestsCannotViewASingleProject()
+    public function guestsCannotManageProjects()
     {
         $project = factory('App\Project')->create();
 
+        $this->get('/projects')->assertRedirect('login');
+        $this->get('/projects/create')->assertRedirect('login');
         $this->get($project->path())->assertRedirect('login');
+        $this->post('/projects', $project->toArray())->assertRedirect('login');
     }
 
     /** @test */
-    public function UserCanCreateProject()
+    public function userCanCreateProject()
     {
         $this->withoutExceptionHandling();
         $this->actingAs(factory('App\User')->create());
+
+        $this->get('/projects/create')->assertStatus(200);
 
         $attributes = [
             'title' => $this->faker->sentence,
@@ -62,7 +52,7 @@ class ProjectsTest extends TestCase
     }
 
     /** @test */
-    public function UserCanViewProject()
+    public function userCanViewProject()
     {
         $this->be(factory('App\User')->create());
         $this->withoutExceptionHandling();
@@ -75,7 +65,7 @@ class ProjectsTest extends TestCase
     }
 
     /** @test */
-    public function UserCanNotViewProjectsOfOthers()
+    public function userCanNotViewProjectsOfOthers()
     {
         $this->be(factory('App\User')->create());
         $project = factory('App\Project')->create();
