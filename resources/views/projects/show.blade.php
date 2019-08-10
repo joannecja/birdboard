@@ -18,10 +18,11 @@
                 {{-- Tasks --}}
                 <div class="mb-5">
                     <h4 class="text-secondary font-weight-normal">Tasks</h4>
-                    <div class="bg-white p-3 rounded-lg shadow-sm mb-3">Twkjfpe werwr</div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm mb-3">Twkjfpe werwr</div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm mb-3">Twkjfpe werwr</div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm">Twkjfpe werwr</div>
+                    @forelse($project->tasks as $task)
+                        <div class="bg-white p-3 rounded-lg shadow-sm mb-3">{{$task->body}}</div>
+                    @empty
+                        <div>Nothing here!</div>
+                    @endforelse
                 </div>
 
                 {{-- General Notes --}}
