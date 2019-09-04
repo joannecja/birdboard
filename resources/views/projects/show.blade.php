@@ -21,8 +21,8 @@
                     @foreach($project->tasks as $task)
                         <div class="bg-white p-3 rounded-lg shadow-sm mb-3">
                             <form action="{{$task->path()}}" method="POST">
-                                @method('PATCH')
                                 @csrf
+                                @method('PATCH')
                                 <div class="d-flex">
                                     <input class="w-100 {{$task->completed ? 'text-gray': ''}}"
                                         style="border:none; outline: none; {{$task->completed ? 'text-decoration:line-through;': ''}}"
@@ -47,8 +47,12 @@
                 {{-- General Notes --}}
                 <div class="mb-5">
                     <h4 class="text-secondary font-weight-normal">General Notes</h4>
-                    <textarea class="bg-white p-3 rounded-lg shadow-sm w-100" style="min-height: 200px;">
-                    </textarea>
+                    <form action="{{$project->path()}}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <textarea name="notes" class="bg-white p-3 rounded-lg shadow-sm w-100" style="min-height: 200px;">{{ $project->notes }}</textarea>
+                        <button type="submit" class="btn btn-info">Save</button>
+                    </form>
                 </div>
             </div>
 
@@ -59,7 +63,5 @@
 
         </div>
     </main>
-
-
 
 @endsection
