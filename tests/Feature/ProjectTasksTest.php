@@ -30,15 +30,17 @@ class ProjectTasksTest extends TestCase
         $this->post($project->path() .'/tasks')->assertRedirect('login');
     }
 
+    /** @test */
     public function onlyTheOwnerCanAddTasksToProject()
     {
         $this->signIn();
 
         $project = factory('App\Project')->create();
-        $this->post($project->path() .'/tasks', ['body' => 'Twkjfpe werwr'])->assertStatus(403);
-        $this->assertDatabaseMissing('tasks', ['body' => 'Twkjfpe werwr']);
+        $this->post($project->path() .'/tasks', ['body' => 'changed'])->assertStatus(403);
+        $this->assertDatabaseMissing('tasks', ['body' => 'changed']);
     }
 
+    /** @test */
     public function onlyTheOwnerCanUpdateTasks()
     {
         $this->signIn();
@@ -46,8 +48,8 @@ class ProjectTasksTest extends TestCase
         $project = factory('App\Project')->create();
         $task = $project->addTask('test task');
 
-        $this->patch($project->path().'/tasks/'.$task->id, ['body' => 'Twkjfpe werwr'])->assertStatus(403);
-        $this->assertDatabaseMissing('tasks', ['body' => 'Twkjfpe werwr']);
+        $this->patch($task->path(), ['body' => 'changed'])->assertStatus(403);
+        $this->assertDatabaseMissing('tasks', ['body' => 'changed']);
     }
 
     /** @test */
@@ -61,8 +63,8 @@ class ProjectTasksTest extends TestCase
         //or
         //$project = factory('App\Project')->create(['owner_id' => auth()->id()]);
 
-        $this->post($project->path() .'/tasks', ['body' => 'Twkjfpe werwr']);
-        $this->get($project->path())->assertSee('Twkjfpe werwr');
+        $this->post($project->path() .'/tasks', ['body' => 'changed']);
+        $this->get($project->path())->assertSee('changed');
     }
 
     /** @test */

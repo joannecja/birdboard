@@ -20,7 +20,7 @@
                     <h4 class="text-secondary font-weight-normal">Tasks</h4>
                     @foreach($project->tasks as $task)
                         <div class="bg-white p-3 rounded-lg shadow-sm mb-3">
-                            <form action="{{$project->path()}}/tasks/{{$task->id}}" method="POST">
+                            <form action="{{$task->path()}}" method="POST">
                                 @method('PATCH')
                                 @csrf
                                 <div class="d-flex">
