@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Project;
 use Tests\TestCase;
+use Tests\Setup\ProjectFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -70,21 +71,25 @@ class ProjectTasksTest extends TestCase
     /** @test */
     public function tasksCanbeUpdated()
     {
-        $this->withoutExceptionHandling();
+        $project = app(ProjectFactory::class)
+            ->ownedBy($this->signIn())
+            ->withTasks(1)
+            ->create();
 
-        $project = app(ProjectFactory::class)->withTasks(1)->create();
-
-        $this->signIn();
-
-        $project = auth()->user()->projects()->create(
-            factory('App\Project')->raw()
-        );
-
-        $task = $project->addTask('test task');
-        $this->patch($project->path().'/tasks/'.$task->id, [
+        $this->patch($project->tasks->first()->path(), [
             'body' => 'changed',
             'completed' => true
         ]);
+
+        // or
+        // $project = app(ProjectFactory::class)
+        //     ->withTasks(1)
+        //     ->create();
+        // $this->actingAs($project->owner)
+        //     ->patch($project->tasks[0]->path(), [
+        //     'body' => 'changed',
+        //     'completed' => true
+        // ]);
 
         $this->assertDatabaseHas('tasks', [
             'body' => 'changed',
