@@ -71,6 +71,9 @@ class ProjectTasksTest extends TestCase
     public function tasksCanbeUpdated()
     {
         $this->withoutExceptionHandling();
+
+        $project = app(ProjectFactory::class)->withTasks(1)->create();
+
         $this->signIn();
 
         $project = auth()->user()->projects()->create(
